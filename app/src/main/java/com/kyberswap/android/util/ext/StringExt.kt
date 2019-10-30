@@ -4,6 +4,8 @@ import com.kyberswap.android.domain.model.CustomBytes32
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.RoundingMode
+import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -47,7 +49,7 @@ fun String.toLongSafe(): Long {
 fun String.toDoubleSafe(): Double {
     if (isNullOrEmpty()) return 0.0
     return try {
-        toDouble()
+        toDoubleOrDefaultZero()
     } catch (ex: NumberFormatException) {
         ex.printStackTrace()
         0.0
@@ -59,7 +61,7 @@ fun String?.percentage(other: String?): BigDecimal {
     if (other.isNullOrEmpty() || this.isNullOrEmpty()) return BigDecimal.ZERO
     if (other.toBigDecimal() == BigDecimal.ZERO) return BigDecimal.ZERO
     return try {
-        (this.toDouble() - other.toDouble()).div(other.toDouble())
+        (this.toDoubleOrDefaultZero() - other.toDoubleOrDefaultZero()).div(other.toDoubleOrDefaultZero())
             .times(100f)
             .toBigDecimal()
             .setScale(2, RoundingMode.UP)
@@ -77,13 +79,16 @@ fun String.toDate(): Date {
         ex.printStackTrace()
         Date()
     }
-
 }
 
 fun String?.toBigDecimalOrDefaultZero(): BigDecimal {
     if (this.isNullOrEmpty()) return BigDecimal.ZERO
     return try {
-        BigDecimal(this)
+        val nf = NumberFormat.getNumberInstance(Locale.getDefault())
+        val df = nf as DecimalFormat
+        df.applyPattern("#,###.######")
+        df.isParseBigDecimal = true
+        df.parse(this) as BigDecimal
     } catch (ex: Exception) {
         ex.printStackTrace()
         BigDecimal.ZERO
@@ -135,15 +140,17 @@ fun String.exactAmount(): String {
 fun String?.toDoubleOrDefaultZero(): Double {
     if (this.isNullOrEmpty()) return 0.0
     return try {
-        toDouble()
+        val df = DecimalFormat("#,###.######")
+        df.parse(this).toDouble()
     } catch (ex: Exception) {
         ex.printStackTrace()
         0.0
     }
 }
 
+
 fun String.updatePrecision(): String {
-    return (this.toDouble() / 10.0.pow(18)).toBigDecimal().toPlainString()
+    return (this.toDoubleOrDefaultZero() / 10.0.pow(18)).toBigDecimal().toPlainString()
 }
 
 fun String.toBytes32(): CustomBytes32 {

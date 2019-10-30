@@ -14,7 +14,6 @@ import com.kyberswap.android.util.ext.toBigDecimalOrDefaultZero
 import com.kyberswap.android.util.ext.toBigIntegerOrDefaultZero
 import com.kyberswap.android.util.ext.toDisplayNumber
 import com.kyberswap.android.util.ext.toDoubleOrDefaultZero
-import com.kyberswap.android.util.ext.toDoubleSafe
 import kotlinx.android.parcel.Parcelize
 import org.web3j.utils.Convert
 import java.math.BigDecimal
@@ -52,7 +51,7 @@ data class Swap(
 ) : Parcelable {
 
     val isMarketRateZero: Boolean
-        get() = marketRate.toDoubleSafe() == 0.0
+        get() = marketRate.toDoubleOrDefaultZero() == 0.0
 
     val allETHBalanceGasLimit: BigInteger
         get() {
@@ -137,7 +136,7 @@ data class Swap(
             .toString()
 
     val warning: Boolean
-        get() = sourceAmount.toDoubleSafe() > 0.0 && expectedRate.isNotEmpty()
+        get() = sourceAmount.toDoubleOrDefaultZero() > 0.0 && expectedRate.isNotEmpty()
 
     val displaySourceToDestAmount: String
         get() {

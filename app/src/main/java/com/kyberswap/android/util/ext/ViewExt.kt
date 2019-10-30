@@ -28,7 +28,7 @@ fun EditText.swap(other: EditText) {
 fun EditText.textToDouble(): Double {
     if (this.text.isNullOrEmpty()) return 0.0
     return try {
-        text.toString().toDouble()
+        text.toString().toDoubleOrDefaultZero()
     } catch (ex: NumberFormatException) {
         ex.printStackTrace()
         0.0
@@ -58,7 +58,7 @@ fun TextView.setAmount(amount: String?) {
 
 fun TextView.getAmountOrDefaultValue(): String {
     return if (text.isNullOrEmpty() ||
-        text.toString().toDouble() == 0.0
+        text.toString().toDoubleOrDefaultZero() == 0.0
     ) context.getString(
         R.string.default_source_amount
     ) else text.toString()

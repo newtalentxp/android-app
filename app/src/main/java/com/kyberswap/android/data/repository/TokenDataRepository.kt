@@ -17,6 +17,7 @@ import com.kyberswap.android.domain.usecase.token.GetChartDataForTokenUseCase
 import com.kyberswap.android.domain.usecase.token.SaveTokenUseCase
 import com.kyberswap.android.util.TokenClient
 import com.kyberswap.android.util.ext.toBigDecimalOrDefaultZero
+import com.kyberswap.android.util.ext.toDoubleOrDefaultZero
 import com.kyberswap.android.util.ext.updatePrecision
 import com.kyberswap.android.util.rx.operator.zipWithFlatMap
 import io.reactivex.Completable
@@ -67,7 +68,8 @@ class TokenDataRepository @Inject constructor(
 
     override fun getExpectedRate(param: GetExpectedRateUseCase.Param): Flowable<List<String>> {
         val tokenSource = param.tokenSource
-        val amount = 10.0.pow(tokenSource.tokenDecimal).times(param.srcAmount.toDouble())
+        val amount =
+            10.0.pow(tokenSource.tokenDecimal).times(param.srcAmount.toDoubleOrDefaultZero())
             .toBigDecimal().toBigInteger()
         return Flowable.fromCallable {
             val expectedRate = tokenClient.getExpectedRate(

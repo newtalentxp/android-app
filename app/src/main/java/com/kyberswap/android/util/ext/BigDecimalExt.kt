@@ -3,11 +3,13 @@ package com.kyberswap.android.util.ext
 import com.kyberswap.android.presentation.common.MIN_SUPPORT_AMOUNT
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.Locale
 
 fun BigDecimal.toDisplayNumber(): String {
-
     val internalValue = toDisplayNumberInternal().toBigDecimalOrDefaultZero().stripTrailingZeros()
-    return if (internalValue.abs() > MIN_SUPPORT_AMOUNT) internalValue.toPlainString() else "0"
+    return if (internalValue.abs() > MIN_SUPPORT_AMOUNT) decimalFormat.format(internalValue) else "0"
 }
 
 fun BigDecimal.toDisplayNumber(length: Int): String {
@@ -46,3 +48,11 @@ fun BigDecimal.toDisplayNumberInternal(length: Int = 4): String {
         }
     }
 }
+
+val decimalFormat: DecimalFormat
+    get() {
+        val nf = NumberFormat.getNumberInstance(Locale.getDefault())
+        val formatter = nf as DecimalFormat
+        formatter.applyPattern("#,###.######")
+        return formatter
+    }

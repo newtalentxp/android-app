@@ -11,6 +11,7 @@ import com.kyberswap.android.util.ext.displayWalletAddress
 import com.kyberswap.android.util.ext.safeToString
 import com.kyberswap.android.util.ext.toBigDecimalOrDefaultZero
 import com.kyberswap.android.util.ext.toDisplayNumber
+import com.kyberswap.android.util.ext.toDoubleOrDefaultZero
 import com.kyberswap.android.util.ext.toLongSafe
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
@@ -336,7 +337,7 @@ data class Transaction(
                     .toString()
 
     val rate: String
-        get() = if (sourceAmount.toDouble() == 0.0) "0" else
+        get() = if (sourceAmount.toDoubleOrDefaultZero() == 0.0) "0" else
             (destAmount.toBigDecimalOrDefaultZero()
                 .divide(sourceAmount.toBigDecimalOrDefaultZero(), 18, RoundingMode.CEILING))
                 .toDisplayNumber()

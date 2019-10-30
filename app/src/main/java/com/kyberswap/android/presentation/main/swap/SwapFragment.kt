@@ -515,6 +515,9 @@ class SwapFragment : BaseFragment(), PendingTransactionNotification, WalletObser
                     currentFocus?.isSelected = false
                     currentFocus = edtDest
                     currentFocus?.isSelected = true
+                    binding.edtDest.setAmount(binding.edtDest.text.toString().toBigDecimalOrDefaultZero().toPlainString())
+                } else {
+                    binding.edtDest.setAmount(binding.edtDest.text.toString().toBigDecimalOrDefaultZero().toDisplayNumber())
                 }
             })
 
@@ -527,7 +530,12 @@ class SwapFragment : BaseFragment(), PendingTransactionNotification, WalletObser
                     currentFocus?.isSelected = false
                     currentFocus = edtSource
                     currentFocus?.isSelected = true
+
+                    binding.edtSource.setAmount(binding.edtSource.text.toString().toBigDecimalOrDefaultZero().toPlainString())
+                } else {
+                    binding.edtSource.setAmount(binding.edtSource.text.toString().toBigDecimalOrDefaultZero().toDisplayNumber())
                 }
+
             })
 
 
@@ -633,6 +641,23 @@ class SwapFragment : BaseFragment(), PendingTransactionNotification, WalletObser
                 }
             }
         })
+
+        binding.edtSource.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+
+                binding.edtSource.clearFocus()
+            }
+            false
+        }
+
+        binding.edtDest.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+
+                binding.edtDest.clearFocus()
+            }
+            false
+        }
+
 
         viewModel.getAlertState.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled()?.let { state ->
